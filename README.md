@@ -1,4 +1,4 @@
-# 🧭 The Polar Emotion Compass
+# The Polar Emotion Compass
 
 **A Privacy-First, Deterministic Emotional Journaling Web Application**
 
@@ -6,7 +6,7 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 - [Overview](#overview)
 - [Key Features](#key-features)
 - [Technical Architecture](#technical-architecture)
@@ -32,19 +32,19 @@ All processing happens locally on the user's device. No data is transmitted, sto
 
 ## Key Features
 
-### ✨ Privacy-First Design
+### Privacy-First Design
 - **Zero external API calls** - All processing is local
 - **No database storage** - In-memory session only
 - **No cloud uploads** - Data never leaves your device
 - **Export to CSV** - Download your data for personal records
 
-### 🧮 Mathematical Precision
+### Mathematical Precision
 - **Deterministic output** - Same input always produces same result
-- **Exponential weighting** - Peak emotional signals get squared emphasis
-- **Proper vector averaging** - Cartesian-space weighted averaging
-- **6-sector emotion wheel** - Clean geometric design at 60° intervals
+- **Top-2 Scalar Blending** - Advanced emotion blending algorithm
+- **Conditional blending logic** - SCALAR radius averaging + CARTESIAN angle interpolation
+- **6-sector emotion wheel** - 48 emotions across 6 primary sectors at 60° intervals
 
-### 🎯 Advanced NLP
+### Advanced NLP
 - **Sentence transformers** - `all-MiniLM-L6-v2` model (~80MB)
 - **Semantic matching** - Cosine similarity against emotion anchors
 - **Threshold filtering** - 0.30 confidence threshold
@@ -86,8 +86,8 @@ All processing happens locally on the user's device. No data is transmitted, sto
                  ▼
 ┌─────────────────────────────────────────────────┐
 │           Emotion Map (Constants)               │
-│  • 6 sectors × 3 intensity levels               │
-│  • 18 emotions + Neutral                        │
+│  • 6 sectors × 8 emotions per sector            │
+│  • 48 emotions total (47 + Neutral)             │
 │  • Deterministic polar coordinates              │
 └─────────────────────────────────────────────────┘
 ```
@@ -170,21 +170,24 @@ Download your session data as CSV with columns:
 
 ### Emotion Wheel Geometry
 
-The emotion wheel uses a **hexagonal design** with 6 primary sectors at 60° intervals:
+The emotion wheel uses a **hexagonal design** with 6 primary sectors at 60° intervals, each containing 8 distinct emotions:
 
-| Sector | Angle | Emotions |
-|--------|-------|----------|
-| **Joy** | 0° | Happy (0.3), Excited (0.6), Euphoric (0.9) |
-| **Anger** | 60° | Mad (0.3), Frustrated (0.6), Infuriated (0.9) |
-| **Fear** | 120° | Scared (0.3), Anxious (0.6), Overwhelmed (0.9) |
-| **Sad** | 180° | Sad (0.3), Lonely (0.6), Isolated (0.9) |
-| **Bad** | 240° | Bad (0.3), Bored (0.6), Apathetic (0.9) |
-| **Peaceful** | 300° | Peaceful (0.3), Relaxed (0.6), Serene (0.9) |
+| Sector | Angle Range | Sample Emotions (8 total per sector) |
+|--------|-------------|---------------------------------------|
+| **Joy** | 330°-30° | Happy, Grateful, Excited, Optimistic, Euphoric, Proud, Confident, Accomplished |
+| **Anger** | 30°-90° | Mad, Irritated, Frustrated, Infuriated, Furious, Resentful, Bitter, Jealous |
+| **Fear** | 90°-150° | Scared, Nervous, Anxious, Overwhelmed, Terrified, Insecure, Helpless, Inadequate |
+| **Sad** | 150°-210° | Sad, Hurt, Lonely, Isolated, Grief, Disappointed, Depressed, Despair |
+| **Bad/Disgust** | 210°-270° | Bad, Tired, Bored, Apathetic, Disgusted, Guilty, Repelled, Ashamed |
+| **Peaceful** | 270°-330° | Peaceful, Content, Relaxed, Serene, Surprised, Trusting, Awestruck, Intimate |
+
+**Total Emotions: 48** (47 active emotions + 1 Neutral state)
 
 **Radius levels:**
-- 0.3 = Core intensity
-- 0.6 = Medium intensity
-- 0.9 = High intensity
+- 0.3 = Low intensity
+- 0.5-0.6 = Moderate intensity
+- 0.7-0.8 = High intensity
+- 0.9 = Extreme intensity
 
 ### NLP Pipeline
 
@@ -197,19 +200,31 @@ user_embedding = MODEL.encode(user_text)
 #### Step 2: Semantic Matching
 ```python
 similarities = cosine_similarity(user_embedding, anchor_embeddings)
-# Compares against 19 emotion anchors (18 emotions + Neutral)
+# Compares against 48 emotion anchors (47 emotions + Neutral)
 ```
 
-#### Step 3: Exponential Weighting
+#### Step 3: Top-2 Scalar Blending
+The system uses an advanced blending algorithm that combines the top 2 emotions:
+
 ```python
-exponential_weights = similarities ** 2
-# Squares similarity scores to emphasize peak signals
+# Select top 2 emotions by similarity score
+top_2_emotions = get_top_2_by_similarity(similarities)
+
+# SCALAR blending for radius (simple average)
+blended_radius = (radius_1 + radius_2) / 2
+
+# CARTESIAN blending for angle (mathematically correct)
+x1, y1 = polar_to_cartesian(radius_1, angle_1)
+x2, y2 = polar_to_cartesian(radius_2, angle_2)
+avg_x = (x1 + x2) / 2
+avg_y = (y1 + y2) / 2
+blended_angle = cartesian_to_polar(avg_x, avg_y)
 ```
 
-**Example:**
-- Emotion A: similarity = 0.6 → weight = 0.36
-- Emotion B: similarity = 0.4 → weight = 0.16
-- Peak signal (A) now has 2.25× more influence (0.36/0.16)
+**Why Top-2 Blending?**
+- Captures emotional nuance (e.g., "anxious but hopeful")
+- Avoids dilution from weak signals
+- Mathematically stable and deterministic
 
 #### Step 4: Threshold Filtering
 ```python
@@ -217,20 +232,16 @@ if max(similarities) < 0.30:
     return (0.0, 0, "Neutral")
 ```
 
-#### Step 5: Cartesian Weighted Averaging
-**Why Cartesian?** Averaging angles directly is mathematically incorrect:
-- ❌ Wrong: (350° + 10°) / 2 = 180° (opposite direction!)
-- ✅ Correct: Convert to (x, y), average, convert back to polar
+#### Step 5: Closest Emotion Matching
+After blending, the system finds the closest predefined emotion:
 
 ```python
-for each active emotion:
-    x, y = polar_to_cartesian(radius, angle)
-    weighted_x += x * exponential_weight
-    weighted_y += y * exponential_weight
+# Calculate distance to all 48 emotions
+for emotion in EMOTION_MAP:
+    distance = sqrt((r - emotion.radius)² + angular_distance(θ, emotion.angle)²)
 
-avg_x = weighted_x / total_weight
-avg_y = weighted_y / total_weight
-radius, angle = cartesian_to_polar(avg_x, avg_y)
+# Return the emotion with minimum distance
+closest_emotion = min(distances)
 ```
 
 #### Step 6: Output
@@ -251,8 +262,12 @@ Final Year Project/
 
 ### `emotion_map.py`
 - **Purpose**: Define deterministic emotion mappings
-- **Structure**: Dictionary with 19 emotions (18 + Neutral)
-- **Data**: Each emotion has `angle` (0-360°) and `radius` (0.0-1.0)
+- **Structure**: Dictionary with 48 emotions (47 + Neutral)
+- **Data**: Each emotion has:
+  - `radius` (0.0-0.9): Intensity level
+  - `angle` (0-360°): Position on emotion wheel
+  - `energy` (Low/Moderate/High/Extreme): Energy classification
+  - `desc`: Human-readable description for UI tooltips
 
 ### `valence_engine.py`
 - **Purpose**: Core NLP and mathematical engine
@@ -387,10 +402,10 @@ This project demonstrates:
 - **UI/UX**: Accessible emotional health tooling
 
 ### Key Innovations
-1. **Exponential weighting** for peak signal emphasis
+1. **Top-2 Scalar Blending** - Advanced emotion blending with conditional logic
 2. **Deterministic** emotion mapping (reproducible results)
 3. **Privacy-first** architecture (no data collection)
-4. **Cartesian averaging** for mathematically correct angle blending
+4. **48-emotion system** - Comprehensive emotional granularity across 6 sectors
 
 ---
 
@@ -413,6 +428,6 @@ For questions, issues, or contributions related to this Final Year Project, plea
 
 ---
 
-**Built with ❤️ and 🧮 Mathematics**
+**Built with Mathematics and Privacy in Mind**
 
 *Privacy-First • Deterministic • Local • Open Source*
