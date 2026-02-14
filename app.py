@@ -14,7 +14,7 @@ from emotion_map import EMOTION_MAP
 # PAGE CONFIGURATION
 st.set_page_config(
     page_title="The Polar Emotion Compass",
-    page_icon="🧭",
+    page_icon="📊",
     layout="wide"
 )
 
@@ -67,7 +67,7 @@ def build_wheel_df(selected_emotion):
     return pd.DataFrame(rows)
 
 # MAIN APPLICATION
-st.title("🧭 The Polar Emotion Compass")
+st.title("The Polar Emotion Compass")
 st.markdown("**Interactive Bubble Wheel — click, zoom, and explore your emotions.**")
 
 # LAYOUT: left input | right wheel
@@ -75,7 +75,7 @@ col_input, col_wheel = st.columns([1, 2])
 
 # LEFT COLUMN — Input Controls
 with col_input:
-    st.subheader("🎯 Manual Override")
+    st.subheader("Manual Override")
     emotion_keys = list(EMOTION_MAP.keys())
     default_idx = emotion_keys.index(st.session_state["selected_emotion"]) if st.session_state["selected_emotion"] in emotion_keys else 0
     manual_emotion = st.selectbox(
@@ -89,7 +89,7 @@ with col_input:
 
     st.markdown("---")
 
-    st.subheader("📋 Context")
+    st.subheader("Context")
     ctx1, ctx2 = st.columns(2)
     with ctx1:
         theme = st.selectbox("Theme", ["Academic", "Freelance", "Relationships", "Health", "Other"])
@@ -98,21 +98,21 @@ with col_input:
 
     st.markdown("---")
 
-    st.subheader("✍️ Journal")
+    st.subheader("Journal")
     user_text = st.text_area(
         "How are you feeling?",
         height=150,
         placeholder="Write freely. The engine picks the strongest sentence."
     )
 
-    if st.button("📊 Log Emotion", type="primary", use_container_width=True):
+    if st.button("Log Emotion", type="primary", use_container_width=True):
         if user_text and user_text.strip():
             radius, angle, detected = calculate_polar_coordinates(user_text)
             st.session_state["selected_emotion"] = detected
 
             # Display result
             if detected == "Neutral":
-                st.warning("🤷 Neutral — no strong emotion detected.")
+                st.warning("Neutral — no strong emotion detected.")
             else:
                 meta = EMOTION_MAP.get(detected, {})
                 st.success(f"**{detected}** — {meta.get('desc', '')}")
@@ -133,7 +133,7 @@ with col_input:
             }])
             csv = export_df.to_csv(index=False)
             st.download_button(
-                "📥 Download CSV",
+                "Download CSV",
                 csv,
                 file_name=f"emotion_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                 mime="text/csv",
@@ -144,7 +144,7 @@ with col_input:
 
 # RIGHT COLUMN — The Interactive Bubble Wheel
 with col_wheel:
-    st.subheader("🫧 Emotion Bubble Wheel")
+    st.subheader("Emotion Bubble Wheel")
 
     df = build_wheel_df(st.session_state["selected_emotion"])
 
@@ -173,7 +173,7 @@ with col_wheel:
                 rotation=90,
                 tickmode="array",
                 tickvals=[0, 60, 120, 180, 240, 300],
-                ticktext=["Joy ☀️", "Anger 🔥", "Fear 😨", "Sad 💧", "Bad 🌑", "Peaceful 🍃"],
+                ticktext=["Joy", "Anger", "Fear", "Sad", "Bad", "Peaceful"],
                 tickfont=dict(size=13)
             ),
             bgcolor="rgba(245,245,250,0.4)"
