@@ -1,0 +1,246 @@
+================================================================================
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+POLAR EMOTION COMPASS - ANGULAR GUARDRAIL TEST RESULTS
+=
+
+Test Case 1: Stolen Web App Code
+--------------------------------------------------------------------------------
+Input:    My teammate took credit for the web app code I wrote. I feel betrayed and furious about this situation.
+Expected: Furious / Infuriated
+Actual:   Jealous
+Stats:    Intensity=0.9000, Angle=75.00°
+================================================================================
+
+Test Case 2: Dream School Acceptance
+--------------------------------------------------------------------------------
+Input:    I just got accepted into my dream college! I'm so excited and proud of myself!
+Expected: Excited / Euphoric
+Actual:   Proud
+Stats:    Intensity=0.6000, Angle=359.47°
+================================================================================
+
+Test Case 3: Overwhelming Final Exams
+--------------------------------------------------------------------------------
+Input:    Final exams are next week and I haven't studied enough. I'm anxious and overwhelmed by everything.
+Expected: Overwhelmed / Anxious
+Actual:   Overwhelmed
+Stats:    Intensity=0.7743, Angle=110.00°
+================================================================================
+
+Test Case 4: Peaceful Weekend Morning
+--------------------------------------------------------------------------------
+Input:    Woke up on Saturday with no deadlines. Just relaxing with coffee and music. I feel peaceful and content.
+Expected: Peaceful / Content
+Actual:   Peaceful
+Stats:    Intensity=0.3000, Angle=300.00°
+================================================================================
+
+Test Case 5: Loss of a Loved One
+--------------------------------------------------------------------------------
+Input:    I lost my grandfather yesterday and the house feels so empty. I miss him so much, I feel incredibly sad and lonely.
+Expected: Grief / Sad
+Actual:   Lonely
+Stats:    Intensity=0.7237, Angle=176.18°
+================================================================================
+
+Test Case 6: Forgot Best Friend's Birthday
+--------------------------------------------------------------------------------
+Input:    I completely forgot my best friend's birthday. I feel like a terrible person, so guilty and ashamed.
+Expected: Guilty / Ashamed
+Actual:   Ashamed
+Stats:    Intensity=0.7761, Angle=250.00°
+================================================================================
+
+Test Case 7: Imposter Syndrome
+--------------------------------------------------------------------------------
+Input:    Everyone in my class seems so much smarter than me. I feel inadequate and insecure about my abilities.
+Expected: Inadequate / Insecure
+Actual:   Inadequate
+Stats:    Intensity=0.7565, Angle=132.61°
+================================================================================
+
+Test Case 8: Unexpected Kindness
+--------------------------------------------------------------------------------
+Input:    My neighbor helped me fix my flat tire in the rain without me even asking. I'm so grateful and touched by their kindness.
+Expected: Grateful
+Actual:   Grateful
+Stats:    Intensity=0.5000, Angle=5.00°
+================================================================================
+
+Test Case 9: Mixed Emotions - Close Angles (Should Blend)
+--------------------------------------------------------------------------------
+Input:    I'm excited about the new job but also nervous about meeting expectations.
+Expected: Excited (blended with Nervous if close enough)
+Actual:   Anxious
+Stats:    Intensity=0.6000, Angle=110.00°
+================================================================================
+
+Test Case 10: Conflicting Emotions - Far Angles (Should NOT Blend)
+--------------------------------------------------------------------------------
+Input:    I'm happy I graduated but sad to leave my friends behind forever.
+Expected: Happy (snapped, NOT blended with Sad)
+Actual:   Depressed
+Stats:    Intensity=0.8000, Angle=195.00°
+================================================================================
+
+
+================================================================================
+Test results saved to: test_results.txt
+================================================================================
