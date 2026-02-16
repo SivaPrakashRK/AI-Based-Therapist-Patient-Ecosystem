@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Analytics - Premium Dashboard</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 40px;
+            overflow-x: hidden;
+        }
+
+        /* Reflection Slideshow */
+        #reflection-slideshow {
+            text-align: center;
+            padding: 60px 20px;
+            margin-bottom: 60px;
+            position: relative;
+            min-height: 150px;
+        }
+
+        .reflection-text {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 32px;
+            font-weight: normal;
+            line-height: 1.6;
+            color: #ffd700;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            position: absolute;
+            width: 100%;
+            left: 0;
+        }
+
+        .reflection-text.active {
+            opacity: 1;
+        }
+
+        /* Grid Container */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 80px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .grid-section {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 300;
+            margin-bottom: 25px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Bar Chart */
+        .bar-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 12px;
+        }
+
+        .bar-label {
+            min-width: 120px;
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        .bar {
+            flex: 1;
+            height: 32px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            padding-left: 12px;
+            font-weight: bold;
+            color: #000;
+            font-size: 13px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar::after {
+            content: attr(data-percentage);
+            position: absolute;
+            right: 12px;
+            color: rgba(0, 0, 0, 0.5);
+            font-size: 11px;
+        }
+
+        /* Bubble Chart */
+        #bubble-chart {
+            width: 100%;
+            height: 350px;
+        }
+
+        .bubble-text {
+            font-size: 16px;
+            font-weight: bold;
+            fill: #000;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            pointer-events: none;
+        }
+
+        /* Context Section */
+        #context-section {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .context-title {
+            font-size: 20px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            text-align: center;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .context-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
+            margin-bottom: 40px;
+        }
+
+        .context-category h3 {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 300;
+            color: #888;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* 3D Isometric Coins */
+        .stack-container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .isometric-base {
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            width: 80px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .coin-stack {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            transform: rotateX(60deg) rotateZ(-45deg);
+            transform-style: preserve-3d;
+            margin-bottom: 15px;
+        }
+
+        .coin {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            box-shadow: inset 0 -2px 5px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .stack-label {
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+            margin-top: 5px;
+            max-width: 80px;
+            word-wrap: break-word;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .empty-state h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="reflection-slideshow"></div>
+
+    <div class="grid-container">
+        <div class="grid-section">
+            <div class="section-title">Emotions Felt Most Often</div>
+            <div id="bar-chart"></div>
+        </div>
+
+        <div class="grid-section">
+            <div class="section-title">Overall Category Breakdown</div>
+            <svg id="bubble-chart"></svg>
+        </div>
+    </div>
+
+    <div id="context-section">
+        <div class="context-title">Context Patterns</div>
+        <div class="context-grid">
+            <div class="context-category">
+                <h3>Activities</h3>
+                <div class="stack-container" id="activities-stacks"></div>
+            </div>
+            <div class="context-category">
+                <h3>People</h3>
+                <div class="stack-container" id="people-stacks"></div>
+            </div>
+            <div class="context-category">
+                <h3>Places</h3>
+                <div class="stack-container" id="places-stacks"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+        let allData = [];
+
+        // Color mapping
+        const categoryColors = {
+            'Joy': '#f7b731',
+            'Anger': '#e94560',
+            'Fear': '#e67e22',
+            'Sad': '#3498db',
+            'Disgust': '#9b59b6',
+            'Peaceful': '#1abc9c'
+        };
+
+        // Get color by category
+        function getColorByCategory(category) {
+            return categoryColors[category] || '#666';
+        }
+
+        // Get color by emotion name (map to category first)
+        function getColorByEmotion(emotion, data) {
+            const entry = data.find(e => e.emotion === emotion);
+            return entry ? getColorByCategory(entry.color_category) : '#666';
+        }
+
+        // Auth Check
+        const userId = localStorage.getItem('user_id');
+        const userRole = localStorage.getItem('user_role');
+
+        if (!userId) {
+            window.location.href = 'login.html';
+        }
+
+        // Add Back Button (Role Aware)
+        const backBtn = document.createElement('button');
+        backBtn.textContent = '← Back';
+        backBtn.style.cssText = `
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            border: 1px solid #444;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            z-index: 1000;
+        `;
+        backBtn.onclick = () => {
+            if (userRole === 'therapist') {
+                window.location.href = 'therapist_home.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        };
+        document.body.appendChild(backBtn);
+
+        // Add Logout Button
+        const logoutBtn = document.createElement('button');
+        logoutBtn.textContent = 'Logout';
+        logoutBtn.style.cssText = `
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #1a1a1a;
+            color: #ffd700;
+            border: 1px solid #444;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            z-index: 1000;
+        `;
+        logoutBtn.onclick = () => {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        };
+        document.body.appendChild(logoutBtn);
+
+        // Add Link Therapist Button (Client Only)
+        if (userRole === 'client') {
+            const linkBtn = document.createElement('button');
+            linkBtn.textContent = 'Link Therapist';
+            linkBtn.style.cssText = `
+                position: absolute;
+                top: 20px;
+                right: 120px;
+                background: rgba(255, 215, 0, 0.1);
+                color: #ffd700;
+                border: 1px solid #ffd700;
+                padding: 8px 15px;
+                border-radius: 20px;
+                cursor: pointer;
+                z-index: 1000;
+            `;
+            linkBtn.onclick = async () => {
+                const newIdStr = prompt("Enter your Therapist's ID:");
+                if (newIdStr) {
+                    const newId = parseInt(newIdStr);
+                    if (isNaN(newId)) {
+                        alert("Please enter a valid numeric ID.");
+                        return;
+                    }
+
+                    try {
+                        const res = await fetch(`${API_URL}/update_therapist`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                user_id: parseInt(userId),
+                                therapist_id: newId
+                            })
+                        });
+                        const data = await res.json();
+                        if (res.ok) {
+                            alert('Therapist linked successfully!');
+                        } else {
+                            alert('Error: ' + (data.detail || 'Update failed'));
+                        }
+                    } catch (err) {
+                        alert('Failed to connect to server.');
+                    }
+                }
+            };
+            document.body.appendChild(linkBtn);
+        }
+
+        // Initialize
+        async function init() {
+            try {
+                const res = await fetch(`${API_URL}/logs/${userId}`);
+                allData = await res.json();
+
+                if (allData.length === 0) {
+                    showEmptyState();
+                    return;
+                }
+
+                renderDashboard();
+            } catch (err) {
+                console.error('Failed to fetch data:', err);
+                showEmptyState('Failed to load data. Make sure the server is running.');
+            }
+        }
+
+        function showEmptyState(message = 'No data yet! Go log some emotions to see your analytics here.') {
+            document.getElementById('reflection-slideshow').innerHTML = `
+    <div class="empty-state">
+      <h2>No Reflections Yet</h2>
+      <p>${message}</p>
+    </div>
+  `;
+            document.querySelector('.grid-container').style.display = 'none';
+            document.getElementById('context-section').style.display = 'none';
+        }
+
+        // === REFLECTION ENGINE ===
+        function generateInsights(data) {
+            const insights = [];
+
+            // Insight 1: Dominant Mood
+            const emotionCounts = {};
+            data.forEach(entry => {
+                emotionCounts[entry.emotion] = (emotionCounts[entry.emotion] || 0) + 1;
+            });
+            const dominantEmotion = Object.entries(emotionCounts)
+                .sort((a, b) => b[1] - a[1])[0];
+            if (dominantEmotion) {
+                insights.push(`You have predominantly felt ${dominantEmotion[0]} lately.`);
+            }
+
+            // Insight 2: Negative Trigger
+            const negativeCategories = ['Anger', 'Fear', 'Sad', 'Disgust'];
+            const negativeEntries = data.filter(e => negativeCategories.includes(e.color_category));
+            if (negativeEntries.length > 0) {
+                const trigger = findMostCommonTag(negativeEntries);
+                if (trigger) {
+                    const emotion = negativeEntries[0].emotion;
+                    insights.push(`You often felt ${emotion} when ${trigger.type === 'activities' ? 'doing' : trigger.type === 'people' ? 'with' : 'at'} ${trigger.value}.`);
+                }
+            }
+
+            // Insight 3: Positive Trigger
+            const positiveCategories = ['Joy', 'Peaceful'];
+            const positiveEntries = data.filter(e => positiveCategories.includes(e.color_category));
+            if (positiveEntries.length > 0) {
+                const trigger = findMostCommonTag(positiveEntries);
+                if (trigger) {
+                    const emotion = positiveEntries[0].emotion;
+                    insights.push(`You felt most ${emotion} when ${trigger.type === 'activities' ? 'doing' : trigger.type === 'people' ? 'with' : 'at'} ${trigger.value}.`);
+                }
+            }
+
+            // Insight 4: Overall pattern
+            const totalEntries = data.length;
+            const uniqueEmotions = Object.keys(emotionCounts).length;
+            insights.push(`You've logged ${totalEntries} emotions across ${uniqueEmotions} different feelings.`);
+
+            return insights;
+        }
+
+        function findMostCommonTag(entries) {
+            const tagCounts = {};
+
+            entries.forEach(entry => {
+                ['activities', 'people', 'places'].forEach(type => {
+                    if (entry[type] && entry[type].length > 0) {
+                        entry[type].forEach(tag => {
+                            const key = `${type}:${tag}`;
+                            tagCounts[key] = (tagCounts[key] || 0) + 1;
+                        });
+                    }
+                });
+            });
+
+            if (Object.keys(tagCounts).length === 0) return null;
+
+            const mostCommon = Object.entries(tagCounts)
+                .sort((a, b) => b[1] - a[1])[0];
+
+            const [type, value] = mostCommon[0].split(':');
+            return { type, value };
+        }
+
+        function startReflectionSlideshow(insights) {
+            const container = document.getElementById('reflection-slideshow');
+            container.innerHTML = ''; // Clear container
+
+            // Create a single text element
+            const textElement = document.createElement('div');
+            textElement.className = 'reflection-text';
+            container.appendChild(textElement);
+
+            let currentIndex = 0;
+
+            // Function to show the next insight
+            function showNext() {
+                // Fade out
+                textElement.classList.remove('active');
+
+                setTimeout(() => {
+                    // Change text and fade in
+                    textElement.textContent = insights[currentIndex];
+                    textElement.classList.add('active');
+
+                    // Increment index
+                    currentIndex = (currentIndex + 1) % insights.length;
+                }, 800); // Wait for fade out (matches CSS transition)
+            }
+
+            // Start the loop
+            showNext();
+            setInterval(showNext, 5000); // Change every 5 seconds
+        }
+
+        // === BAR CHART ===
+        function renderBarChart(data) {
+            const emotionCounts = {};
+            data.forEach(entry => {
+                emotionCounts[entry.emotion] = (emotionCounts[entry.emotion] || 0) + 1;
+            });
+
+            const sorted = Object.entries(emotionCounts)
+                .map(([emotion, count]) => {
+                    const entry = data.find(e => e.emotion === emotion);
+                    return { emotion, count, category: entry.color_category };
+                })
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 8);
+
+            const maxCount = sorted[0].count;
+            const container = document.getElementById('bar-chart');
+
+            sorted.forEach(item => {
+                const percentage = (item.count / maxCount) * 100;
+                const color = getColorByCategory(item.category);
+
+                const row = document.createElement('div');
+                row.className = 'bar-row';
+
+                row.innerHTML = `
+      <div class="bar-label">${item.emotion}</div>
+      <div class="bar" style="width: ${percentage}%; background: ${color};" data-percentage="${Math.round(percentage)}%">
+        ${item.count}
+      </div>
+    `;
+
+                container.appendChild(row);
+            });
+        }
+
+        // === BUBBLE CHART ===
+        function renderBubbleChart(data) {
+            const categoryCounts = {};
+            data.forEach(entry => {
+                categoryCounts[entry.color_category] = (categoryCounts[entry.color_category] || 0) + 1;
+            });
+
+            const total = data.length;
+            const nodes = Object.entries(categoryCounts).map(([category, count]) => ({
+                category,
+                count,
+                percentage: Math.round((count / total) * 100),
+                r: Math.max((count / total) * 100 * 1.5, 30)
+            }));
+
+            const svg = d3.select('#bubble-chart');
+            const width = svg.node().getBoundingClientRect().width;
+            const height = 350;
+
+            svg.selectAll('*').remove();
+
+            const simulation = d3.forceSimulation(nodes)
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('collide', d3.forceCollide().radius(d => d.r + 5).iterations(4))
+                .force('charge', d3.forceManyBody().strength(10))
+                .alpha(1)
+                .alphaDecay(0.05);
+
+            const bubbles = svg.selectAll('g')
+                .data(nodes)
+                .enter()
+                .append('g');
+
+            bubbles.append('circle')
+                .attr('r', d => d.r)
+                .attr('fill', d => getColorByCategory(d.category))
+                .attr('opacity', 0.85);
+
+            bubbles.append('text')
+                .attr('class', 'bubble-text')
+                .text(d => `${d.percentage}%`)
+                .attr('font-size', d => Math.max(d.r / 2.5, 14) + 'px');
+
+            simulation.on('tick', () => {
+                bubbles.attr('transform', d => `translate(${d.x},${d.y})`);
+            });
+        }
+
+        // === 3D ISOMETRIC COIN STACKS ===
+        function renderStackedCoins(containerId, tagType) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            // Count tag frequencies
+            const tagCounts = {};
+            allData.forEach(entry => {
+                if (entry[tagType] && entry[tagType].length > 0) {
+                    entry[tagType].forEach(tag => {
+                        if (!tagCounts[tag]) tagCounts[tag] = [];
+                        tagCounts[tag].push({ emotion: entry.emotion, category: entry.color_category });
+                    });
+                }
+            });
+
+            // Get top 4 tags
+            const topTags = Object.entries(tagCounts)
+                .sort((a, b) => b[1].length - a[1].length)
+                .slice(0, 4);
+
+            topTags.forEach(([tag, instances]) => {
+                const base = document.createElement('div');
+                base.className = 'isometric-base';
+
+                const stack = document.createElement('div');
+                stack.className = 'coin-stack';
+
+                instances.forEach((instance, index) => {
+                    const coin = document.createElement('div');
+                    coin.className = 'coin';
+                    const color = getColorByCategory(instance.category);
+                    coin.style.background = color;
+                    coin.style.transform = `translateZ(${index * 6}px)`;
+                    stack.appendChild(coin);
+                });
+
+                const label = document.createElement('div');
+                label.className = 'stack-label';
+                label.textContent = tag;
+
+                base.appendChild(stack);
+                base.appendChild(label);
+                container.appendChild(base);
+            });
+        }
+
+        // === MAIN RENDER ===
+        function renderDashboard() {
+            // Reflections
+            const insights = generateInsights(allData);
+            startReflectionSlideshow(insights);
+
+            // Charts
+            renderBarChart(allData);
+            renderBubbleChart(allData);
+
+            // 3D Coins
+            renderStackedCoins('activities-stacks', 'activities');
+            renderStackedCoins('people-stacks', 'people');
+            renderStackedCoins('places-stacks', 'places');
+        }
+
+        // Initialize on load
+        window.addEventListener('load', init);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical Dashboard | Polar Emotion Compass</title>
+    <style>
+        body {
+            background-color: #f4f4f9;
+            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 40px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+            border-bottom: 2px solid #e1e1e8;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #7f8c8d;
+            font-weight: 400;
+            margin-top: 5px;
+        }
+
+        #logout-btn {
+            background-color: #fff;
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        #logout-btn:hover {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+
+        /* Patient Grid */
+        #patient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        /* Patient Card */
+        .patient-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: 1px solid #eee;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .patient-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-color: #3498db;
+        }
+
+        .patient-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #3498db;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .patient-id {
+            font-size: 12px;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .patient-avatar {
+            width: 40px;
+            height: 40px;
+            background: #ecf0f1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .patient-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .card-action {
+            margin-top: 15px;
+            text-align: right;
+            font-size: 14px;
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        .loading-state {
+            text-align: center;
+            color: #95a5a6;
+            font-size: 18px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div>
+            <h1 id="welcome-msg">Clinical Dashboard</h1>
+            <div class="subtitle">Select a patient to view analytics</div>
+        </div>
+        <button id="logout-btn">Logout</button>
+    </header>
+
+    <div id="patient-grid">
+        <!-- Patient Cards will be injected here -->
+        <div class="loading-state">Loading patient list...</div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+
+        // ── Auth Check ──
+        const userId = localStorage.getItem('user_id');
+        const username = localStorage.getItem('username');
+        const role = localStorage.getItem('user_role');
+
+        if (!userId || role !== 'therapist') {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('welcome-msg').textContent = `Clinical Dashboard - Welcome, Dr. ${username || ''}`;
+
+        // Logout Logic
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        });
+
+        // ── Fetch & Render Clients ──
+        async function fetchClients() {
+            const grid = document.getElementById('patient-grid');
+
+            try {
+                const res = await fetch(`${API_URL}/therapist/${userId}/clients`);
+                if (!res.ok) throw new Error('Failed to fetch clients');
+
+                const clients = await res.json();
+
+                if (clients.length === 0) {
+                    grid.innerHTML = '<div class="loading-state">No patients assigned yet.</div>';
+                    return;
+                }
+
+                grid.innerHTML = ''; // Clear loading state
+
+                clients.forEach(client => {
+                    const card = document.createElement('div');
+                    card.className = 'patient-card';
+                    card.onclick = () => {
+                        window.location.href = `dashboard.html?view_client=${client.id}`;
+                    };
+
+                    const initial = client.username.charAt(0).toUpperCase();
+
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <span class="patient-id">ID: #${client.id}</span>
+                            <div class="patient-avatar">${initial}</div>
+                        </div>
+                        <div class="patient-name">${client.username}</div>
+                        <div class="card-action">View Analytics →</div>
+                    `;
+
+                    grid.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = `<div class="loading-state" style="color: #e74c3c;">Error loading patients. Ensure server is running.</div>`;
+            }
+        }
+
+        // Initialize
+        fetchClients();
+    </script>
+</body>
+
+</html>
